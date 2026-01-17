@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Twitch Info
+  twitchUserId       String  @unique
+  twitchUsername     String
+  twitchAccessToken  String
+  twitchRefreshToken String
+  twitchScopes       String[] // Store as array of scopes
+
+  // Google/YouTube Info (nullable until they connect)
+  googleRefreshToken String?
+  youtubePlaylistId  String?
+  playlistName       String  @default("Song Requests")
+
+  // Bot Settings
+  isActive Boolean @default(true) // Whether bot should be in their channel
+  
+  @@index([twitchUserId])
+  @@index([isActive])
+}
